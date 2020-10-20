@@ -1,0 +1,14 @@
+# HUNTERS
+hunter.energy_to_reproduce = 30
+hunter.energy_per_prey_eaten = 10
+hunter.max_age = 20
+
+# PREY
+prey.birth_rate = 17
+prey.max_age = 6
+
+# ENVIRONMENT
+width = 200
+height = 200
+start_amount_of_hunter = 20
+start_amount_of_prey = 100
