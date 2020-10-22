@@ -7,16 +7,18 @@ from util.config_reader import ConfigReader
 class Hunter(Agent):
     def __init__(self):
         super().__init__()
-        self.energy_level = 100
         self.energy_to_reproduce = int(ConfigReader("hunter.energy_to_reproduce"))
         self.energy_per_prey_eaten = int(ConfigReader("hunter.energy_per_prey_eaten"))
+        self.energy_level = 3*self.energy_per_prey_eaten
         self.max_age = int(ConfigReader("hunter.max_age"))
         self.movements = [[1, 0], [0, 1], [-1, 0], [1, 0], [0, 0]]
 
     def step(self):
+        reward = self.energy_level
         super(Hunter, self).step()
         self.energy_level = self.energy_level - 1
-        self.move()
+        reward = reward - self.energy_level
+        return self.move(), reward, self.energy_level, self.age
 
     def move(self):
         """
@@ -29,6 +31,7 @@ class Hunter(Agent):
         if int(ConfigReader("height"))>self.y_pos + action[0]>0:
             self.y_pos = self.y_pos + action[1]
         print("new position: ", self.x_pos, self.y_pos)
+        return action;
 
     def give_birth(self):
         """
@@ -37,7 +40,7 @@ class Hunter(Agent):
         """
         if self.energy_level > self.energy_to_reproduce:
             birth_probability = random.randint(0, 100)
-            if birth_probability > 95:  # 50% chance the agent will reproduce if he has the energy for it.
+            if birth_probability > 0:  # 50% chance the agent will reproduce if he has the energy for it.
                 self.energy_level = self.energy_level-self.energy_to_reproduce
                 return True
         return False
@@ -61,4 +64,3 @@ class Hunter(Agent):
         if self.energy_level > 0 and self.age < self.max_age:
             return True
         return False
-

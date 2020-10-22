@@ -12,7 +12,8 @@ class HunterModel():
         living_hunters = []
         for id in range(0, i):
             hunter = self.hunters.pop()
-            hunter.step()
+            action, reward, energy, age = hunter.step()
+
             if hunter.give_birth():
                 living_hunters.append(Hunter())
             if hunter.alive():

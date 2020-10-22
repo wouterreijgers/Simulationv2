@@ -42,7 +42,7 @@ class Environment():
                 running = False
             if not self.hunter_model.has_hunters():
                 running = False
-            time.sleep(1)
+            time.sleep(0.1)
             self.simulation_time += 1
         self.simulator.quit()
         print("SIMULATION ENDED")

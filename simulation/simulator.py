@@ -7,9 +7,9 @@ from util.monitoring import Monitoring
 class Simulator():
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode([1000, 1000])
-        self.x_unit = 1000 / int(ConfigReader("width"))
-        self.y_unit = 1000 / int(ConfigReader("height"))
+        self.screen = pygame.display.set_mode([500, 500])
+        self.x_unit = 500 / int(ConfigReader("width"))
+        self.y_unit = 500 / int(ConfigReader("height"))
         self.monitor = Monitoring()
 
     def run(self, simulation_time, hunters, preys):
