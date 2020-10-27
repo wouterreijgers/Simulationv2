@@ -1,2 +1,9 @@
 matplotlib~=3.3.2
 pygame~=1.9.6
+gym~=0.17.3
+torch~=1.7.0
+ray~=1.0.0
+pandas
+dm-tree
+dataclasses
+opencv-python
