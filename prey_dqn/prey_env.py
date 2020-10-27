@@ -39,6 +39,9 @@ class PreyModel():
         rel_x = 0
         rel_y = 0
         nearest_prey = None
+        if len(self.get_preys())==0:
+            print("is zero")
+            return math.inf, math.inf
         for prey in self.get_preys():
             x, y = prey.get_position()
             dist = abs(state[0]-x) + abs(state[1]-y)
@@ -48,8 +51,7 @@ class PreyModel():
                 rel_x = x-state[0]
                 rel_y = y-state[1]
                 nearest_prey = prey
-        if best_dist < 5:
+        if best_dist < 2:
             nearest_prey.kill()
-            print("kill")
         return rel_x, rel_y
 

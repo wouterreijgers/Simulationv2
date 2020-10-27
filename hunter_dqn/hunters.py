@@ -39,12 +39,12 @@ class Hunters():
             # action, _, _ = self.trainer.get_policy().compute_actions([observation], [])
             action, _, _ = self.trainer.compute_actions([observation], [])
             observation, reward, done, reproduce = env.step(action[0])
-            print(reproduce)
+            #print(reproduce)
             self.total_reward += reward
             if not done:
                 living_hunters.append([env, observation])
             if reproduce:
-                self.new_hunter()
+                living_hunters.append(self.new_hunter())
         self.hunters = living_hunters
 
     def has_hunters(self):
