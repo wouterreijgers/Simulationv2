@@ -1,4 +1,5 @@
 import json
+import math
 
 import gym
 import ray
@@ -9,7 +10,7 @@ from ray.rllib.models import ModelCatalog
 from ray.rllib.train import torch
 
 from hunter_dqn.hunter_env import HunterEnv
-from hunter_dqn.hunter_model import DQNModel
+from hunter_dqn.hunter_model import DQNModel_Hunter
 from hunter_dqn.hunter_policy import HunterPolicy
 
 
@@ -23,7 +24,6 @@ class Hunters():
         self.checkpoint = 1000
         self.env_name = "HunterEnv"
         self.total_reward = 0
-        ray.init()
         self.preys = preys
         #ModelCatalog.register_custom_model("DQNModel", DQNModel)
         #with open(self.folder + "/params.json") as json_file:
@@ -44,6 +44,7 @@ class Hunters():
             if not done:
                 living_hunters.append([env, observation])
             if reproduce:
+                print("birth", self.steps)
                 living_hunters.append(self.new_hunter())
         self.hunters = living_hunters
 
@@ -70,6 +71,21 @@ class Hunters():
             for prey in preys:
                 if hunter.hunt(prey):
                     prey.kill()
+
+    def get_rel_x_y(self, state):
+        best_dist = math.inf
+        rel_x = 0
+        rel_y = 0
+        if len(self.hunters)==0:
+            return math.inf, math.inf
+        for env, obs in self.hunters:
+            pos = env.get_position()
+            dist = abs(state[0] - pos[0].item()) + abs(state[1] - pos[1].item())
+            if dist < best_dist:
+                best_dist = dist
+                rel_x = pos[0].item() - state[0]
+                rel_y = pos[1].item() - state[1]
+        return rel_x, rel_y
 
 
 DEFAULT_CONFIG = with_common_config({

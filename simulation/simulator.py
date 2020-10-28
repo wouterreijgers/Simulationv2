@@ -23,8 +23,8 @@ class Simulator():
             surf = pygame.Surface((self.x_unit, self.y_unit))
             surf.fill((255, 127, 80))
             self.screen.blit(surf, (x.item() * self.x_unit, y.item() * self.y_unit))
-        for prey in preys:
-            x, y = prey.get_position()
+        for observation in preys:
+            x, y = observation
             surf = pygame.Surface((self.x_unit, self.y_unit))
             surf.fill((220, 220, 220))
             self.screen.blit(surf, (x * self.x_unit, y * self.y_unit))

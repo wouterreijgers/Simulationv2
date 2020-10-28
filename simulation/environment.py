@@ -1,7 +1,7 @@
 import time
 
 from hunter_dqn.hunters import Hunters
-from prey_dqn.prey_env import PreyModel
+from prey_dqn.preys import Preys
 from simulation.simulator import Simulator
 from util.config_reader import ConfigReader
 
@@ -18,8 +18,9 @@ class Environment():
         print("\tHUNTERS: ", int(self.start_amount_of_hunter))
         print("\tPREYS: ", int(self.start_amount_of_preys), "\n")
 
-        self.prey_model = PreyModel()
+        self.prey_model = Preys()
         self.hunter_model = Hunters(self.prey_model)
+        self.prey_model.set_hunters(self.hunter_model)
 
         self.simulator = Simulator()
         self.simulation_time = 0

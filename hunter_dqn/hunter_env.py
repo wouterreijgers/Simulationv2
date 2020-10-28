@@ -52,7 +52,7 @@ class HunterEnv(gym.Env):
         self.width = int(ConfigReader("width"))
         self.height = int(ConfigReader("height"))
         high = np.array([self.max_age, self.max_energy, self.width, self.height], dtype=np.float32)
-        self.action_space = spaces.Discrete(4)
+        self.action_space = spaces.Discrete(5)
         self.observation_space = spaces.Box(np.array([0, 0, 0, 0]), high, dtype=np.float32)
         self.energy_to_reproduce = int(ConfigReader("hunter.energy_to_reproduce"))
         self.energy_per_prey_eaten = int(ConfigReader("hunter.energy_per_prey_eaten"))
@@ -81,7 +81,6 @@ class HunterEnv(gym.Env):
         #if action == 0 and self.energy >= self.energy_to_reproduce:
         if energy >= self.energy_to_reproduce:
             energy -= self.energy_to_reproduce
-            print("birth")
             reproduce = True
         if action == 1 and self.y < self.height - 1:
             self.y += 1
@@ -94,7 +93,8 @@ class HunterEnv(gym.Env):
 
         # find closest prey and 'eat' if close enough
         x_to_prey, y_to_prey = self.preys.get_rel_x_y([self.x, self.y])
-        if(abs(x_to_prey) + abs(y_to_prey)) < 2:
+        if(abs(x_to_prey) + abs(y_to_prey)) < 3:
+            print("hunt")
             energy += self.energy_per_prey_eaten
 
         self.state = (age, energy, x_to_prey, y_to_prey)

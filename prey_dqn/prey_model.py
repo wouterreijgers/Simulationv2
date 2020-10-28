@@ -4,7 +4,7 @@ from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
 from gym.spaces import Discrete, Box
 
 
-class DQNModel_Hunter(nn.Module, TorchModelV2):
+class DQNModel_Prey(nn.Module, TorchModelV2):
 
     def __init__(self, obs_space, action_space, num_outputs, model_config,
                  name):
