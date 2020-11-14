@@ -41,7 +41,7 @@ class PreyEnv(gym.Env):
         The prey dies when his age is the max_age or when he is eaten by a hunter.
     """
 
-    def __init__(self, hunters):
+    def __init__(self):
         # Static configurations
         self.max_age = int(ConfigReader("prey.max_age"))
         self.width = int(ConfigReader("width"))
@@ -51,7 +51,6 @@ class PreyEnv(gym.Env):
         high = np.array([self.max_age, self.width, self.height], dtype=np.float32)
         self.action_space = spaces.Discrete(4)
         self.observation_space = spaces.Box(np.array([0, 0, 0]), high, dtype=np.float32)
-        self.hunters = hunters
         # Prey specific
         self.age = 0
         self.x = random.randint(0, self.width)
@@ -86,7 +85,7 @@ class PreyEnv(gym.Env):
             self.x += 1
 
         # find closest prey and 'eat' if close enough
-        x_to_hunter, y_to_hunter = self.hunters.get_rel_x_y([self.x, self.y])
+        x_to_hunter, y_to_hunter = 10, 10#self.hunters.get_rel_x_y([self.x, self.y])
         self.state = (age, x_to_hunter, y_to_hunter)
         done = bool(
             (abs(x_to_hunter) + abs(y_to_hunter)) < 3

@@ -19,15 +19,11 @@ class Environment():
         print("\tPREYS: ", int(self.start_amount_of_preys), "\n")
 
         self.prey_model = Preys()
-        self.hunter_model = Hunters(self.prey_model)
+        self.hunter_model = Hunters(        )
         self.prey_model.set_hunters(self.hunter_model)
 
         self.simulator = Simulator()
         self.simulation_time = 0
-
-    def create_hunters(self):
-        for i in range(int(self.start_amount_of_hunter)):
-            self.hunter_model.new_hunter()
 
     def create_preys(self):
         for i in range(int(self.start_amount_of_preys)):

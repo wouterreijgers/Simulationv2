@@ -1,5 +1,6 @@
 import random
 import pandas as pd
+import ray
 from dataclasses import dataclass
 
 import gym
@@ -7,6 +8,10 @@ from gym import spaces, logger
 import numpy as np
 
 from util.config_reader import ConfigReader
+
+"""
+https://docs.ray.io/en/master/rllib-env.html
+"""
 
 
 class HunterEnv(gym.Env):
@@ -45,7 +50,7 @@ class HunterEnv(gym.Env):
         The hunter dies when his energy is zero or when his age reaches the maximum age.
     """
 
-    def __init__(self, preys):
+    def __init__(self):
         # Static configurations
         self.max_age = int(ConfigReader("hunter.max_age"))
         self.max_energy = 100
@@ -53,10 +58,12 @@ class HunterEnv(gym.Env):
         self.height = int(ConfigReader("height"))
         high = np.array([self.max_age, self.max_energy, self.width, self.height], dtype=np.float32)
         self.action_space = spaces.Discrete(5)
+        self.action_shape = self.action_space.n
         self.observation_space = spaces.Box(np.array([0, 0, 0, 0]), high, dtype=np.float32)
+        print(self.observation_space)
         self.energy_to_reproduce = int(ConfigReader("hunter.energy_to_reproduce"))
         self.energy_per_prey_eaten = int(ConfigReader("hunter.energy_per_prey_eaten"))
-        self.preys = preys
+        #self.preys = preys
         # Hunter specific
         self.age = 0
         self.energy = 3 * self.energy_per_prey_eaten
@@ -65,11 +72,15 @@ class HunterEnv(gym.Env):
 
         self.state = None
         self.steps_beyond_done = None
+        self.done= False
 
     def step(self, action):
         err_msg = "%r (%s) invalid" % (action, type(action))
         assert self.action_space.contains(action), err_msg
 
+        print('step')
+
+        # print(self.state)
         age, energy, x_to_prey, y_to_prey = self.state
         reproduce = False
 
@@ -77,10 +88,13 @@ class HunterEnv(gym.Env):
         age += 1
         energy -= 1
 
+        reward = 0
+
         # perform the action
-        #if action == 0 and self.energy >= self.energy_to_reproduce:
-        if energy >= self.energy_to_reproduce:
+        if energy >= self.energy_to_reproduce + 1:
+            # if action == 0 and self.energy >= self.energy_to_reproduce:
             energy -= self.energy_to_reproduce
+            reward += 2
             reproduce = True
         if action == 1 and self.y < self.height - 1:
             self.y += 1
@@ -92,25 +106,24 @@ class HunterEnv(gym.Env):
             self.x += 1
 
         # find closest prey and 'eat' if close enough
-        x_to_prey, y_to_prey = self.preys.get_rel_x_y([self.x, self.y])
-        if(abs(x_to_prey) + abs(y_to_prey)) < 3:
-            print("hunt")
+        x_to_prey, y_to_prey = 10, 10#self.preys.get_rel_x_y([self.x, self.y])
+        if (abs(x_to_prey) + abs(y_to_prey)) < 3:
             energy += self.energy_per_prey_eaten
 
         self.state = (age, energy, x_to_prey, y_to_prey)
-        done = bool(
+        self.done = bool(
             age > self.max_age
             or energy <= 0
         )
 
         # TODO: Define rewards when the hunter catches a prey/gives birth/...
 
-        if not done:
-            reward = 1
+        if not self.done:
+            reward += 1
         elif self.steps_beyond_done is None:
             # Hunter jus died
             self.steps_beyond_done = 0
-            reward = 1.0
+            reward += 1.0
         else:
             if self.steps_beyond_done == 0:
                 logger.warn(
@@ -122,7 +135,7 @@ class HunterEnv(gym.Env):
             self.steps_beyond_done += 1
             reward = 0.0
 
-        return np.array(self.state), reward, done, reproduce
+        return np.array(self.state), reward, self.done, reproduce
 
     def reset(self):
         self.state = (0, self.energy, random.randint(0, self.width), random.randint(0, self.width))
@@ -130,7 +143,8 @@ class HunterEnv(gym.Env):
         return np.array(self.state)
 
     def get_position(self):
-        return np.array([self.x, self.y])
+        if not self.done:
+            return np.array([self.x, self.y])
 
     def render(self, mode='human'):
         pass

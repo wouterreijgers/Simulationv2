@@ -29,7 +29,7 @@ class Preys():
 
     def set_hunters(self, hunters):
         self.hunters = hunters
-        self.trainer = PreyPolicy(PreyEnv(hunters).observation_space, PreyEnv(hunters).action_space, {})
+        self.trainer = PreyPolicy(PreyEnv().observation_space, PreyEnv().action_space, {})
 
     def update_preys(self):
         living_preys = []
@@ -55,7 +55,7 @@ class Preys():
 
     def new_prey(self):
         # env = gym.make(self.env_name)
-        env = PreyEnv(self.hunters)
+        env = PreyEnv()
         observation = env.reset()
         self.preys.append([env, observation])
         return [env, observation]
