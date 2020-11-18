@@ -30,10 +30,10 @@ class MultiHunterEnv(MultiAgentEnv):
     def step(self, action_dict: MultiAgentDict) -> Tuple[dict, dict, Dict[Union[str, Any], Union[bool, Any]], dict]:
         hunters = []
         n = 0
-        print(len(self.agents))
+        #print(len(self.agents))
         observation, reward, done, reproduce = {}, {}, {}, {}
         alive = []
-        print(len(action_dict), action_dict)
+        #print(len(action_dict), action_dict)
         for i, action in action_dict.items():
             if not i in self.dones:
                 observation[i], reward[i], done[i], reproduce[i] = self.agents[i].step(action)
@@ -52,7 +52,7 @@ class MultiHunterEnv(MultiAgentEnv):
                     reproduce[len(self.agents)] = False
                     self.agents.append(new_hunter)
         done["__all__"] = len(self.dones) == len(self.agents)
-        print(observation)
+        #print(observation)
         self.alive = len(observation)
         return observation, reward, done, reproduce
 
@@ -62,7 +62,7 @@ class MultiHunterEnv(MultiAgentEnv):
             if not i in self.dones:
                 print('get pos loop ', i)
                 obs_batch = torch.cat([obs_batch, torch.tensor(self.agents[i].get_position()).unsqueeze(0)], 0)
-        print("obs_batch", len(obs_batch), obs_batch)
+        #print("obs_batch", len(obs_batch), obs_batch)
         return obs_batch
 
     def get(self):

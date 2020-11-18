@@ -88,5 +88,10 @@ if __name__ == "__main__":
                 },
                 # extra options to pass to your model
             },
+            "multiagent": {
+                "policy_mapping_fn": policy_mapping_fn,
+                "policies": policies,
+                "policies_to_train": policies
+            },
         }
     )

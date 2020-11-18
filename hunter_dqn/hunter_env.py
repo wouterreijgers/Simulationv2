@@ -60,7 +60,7 @@ class HunterEnv(gym.Env):
         self.action_space = spaces.Discrete(5)
         self.action_shape = self.action_space.n
         self.observation_space = spaces.Box(np.array([0, 0, 0, 0]), high, dtype=np.float32)
-        print(self.observation_space)
+        #print(self.observation_space)
         self.energy_to_reproduce = int(ConfigReader("hunter.energy_to_reproduce"))
         self.energy_per_prey_eaten = int(ConfigReader("hunter.energy_per_prey_eaten"))
         #self.preys = preys
@@ -78,7 +78,7 @@ class HunterEnv(gym.Env):
         err_msg = "%r (%s) invalid" % (action, type(action))
         assert self.action_space.contains(action), err_msg
 
-        print('step')
+        #print('step')
 
         # print(self.state)
         age, energy, x_to_prey, y_to_prey = self.state
